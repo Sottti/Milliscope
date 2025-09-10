@@ -1,11 +1,14 @@
 package com.sotti.milliscope.ui
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -16,8 +19,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sotti.milliscope.data.MainActivityViewModel
 import com.sotti.milliscope.model.ItemId
@@ -93,6 +98,15 @@ private fun List(
         ) { index -> Item(item = state.items[index]) }
     }
 
+    NotifyVisibilityChanges(state = state, listState = listState, onAction = onAction)
+}
+
+@Composable
+private fun NotifyVisibilityChanges(
+    listState: LazyListState,
+    onAction: (MainActivityAction) -> Unit,
+    state: MainActivityState,
+) {
     val idsByIndexState = rememberUpdatedState(newValue = state.items.map { it.id })
 
     LaunchedEffect(listState) {
@@ -116,7 +130,8 @@ private fun Item(
     item: MainActivityItemUi,
     //onAction: (MainActivityAction) -> Unit,
 ) {
-    ListItem(
+    Card(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        ListItem(
 //        modifier = Modifier.onVisibilityChanged(
 //            minDurationMs = 0,
 //            minFractionVisible = 1f
@@ -126,7 +141,9 @@ private fun Item(
 //                else -> onAction(BecameNotVisible(item.id))
 //            }
 //        },
-        headlineContent = { Text(text = item.label) },
-        trailingContent = { Text(text = item.formattedVisibleTimeInSeconds) },
-    )
+            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+            headlineContent = { Text(text = item.label) },
+            trailingContent = { Text(text = item.formattedVisibleTimeInSeconds) },
+        )
+    }
 }
