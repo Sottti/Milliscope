@@ -26,16 +26,15 @@ private fun MainActivityItemUi.updateItem(
     now: Long,
 ): MainActivityItemUi {
     val start = visibleItems[id]?.value
-    val total = when {
-        start != null ->
-            previouslyAccumulatedVisibleTimeInMilliSeconds + (now - start)
+    val total = start?.let {
+        val clampedDelta = (now - it).coerceAtLeast(0L)
+        previouslyAccumulatedVisibleTimeInMilliSeconds + clampedDelta
+    } ?: previouslyAccumulatedVisibleTimeInMilliSeconds
 
-        else -> previouslyAccumulatedVisibleTimeInMilliSeconds
-    }
-
-    return when (total) {
-        visibleTimeInMilliSeconds -> this
-        else -> copy(
+    return if (total == visibleTimeInMilliSeconds) {
+        this
+    } else {
+        copy(
             formattedVisibleTimeInSeconds = total.toVisibleTime(),
             visibleTimeInMilliSeconds = total,
         )

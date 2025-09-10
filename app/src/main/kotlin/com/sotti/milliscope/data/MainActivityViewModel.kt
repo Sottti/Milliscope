@@ -42,18 +42,15 @@ internal class MainActivityViewModel(
     }
 
     private fun MutableMap<ItemId, ElapsedRealTimeWhenBecameVisible>.asVisible(itemId: ItemId) {
-        if (itemId !in this) {
-            this[itemId] = ElapsedRealTimeWhenBecameVisible(clock.now())
-        }
+        putIfAbsent(itemId, ElapsedRealTimeWhenBecameVisible(clock.now()))
     }
 
     private fun MutableMap<ItemId, ElapsedRealTimeWhenBecameVisible>.asNotVisible(itemId: ItemId) {
-        remove(itemId)?.let { start ->
-            _state.updateNotVisibleItem(
-                elapsedRealTimeWhenBecameVisible = start,
-                itemId = itemId,
-                now = clock.now()
-            )
-        }
+        val start = remove(itemId) ?: return
+        _state.updateNotVisibleItem(
+            elapsedRealTimeWhenBecameVisible = start,
+            itemId = itemId,
+            now = clock.now()
+        )
     }
 }
