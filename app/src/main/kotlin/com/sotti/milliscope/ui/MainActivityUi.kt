@@ -114,14 +114,14 @@ private fun NotifyVisibilityChanges(
         snapshotFlow {
             listState.layoutInfo.visibleItemsInfo.map { it.index }.sorted()
         }.distinctUntilChanged().collect { visibleIndices ->
-                val idsByIndex = idsByIndexState.value
-                val visibleIds = visibleIndices.map { idsByIndex[it] }.toSet()
-                val becameVisible = visibleIds - prev
-                val becameHidden = prev - visibleIds
-                becameVisible.forEach { onAction(BecameVisible(it)) }
-                becameHidden.forEach { onAction(BecameNotVisible(it)) }
-                prev = visibleIds
-            }
+            val idsByIndex = idsByIndexState.value
+            val visibleIds = visibleIndices.map { idsByIndex[it] }.toSet()
+            val becameVisible = visibleIds - prev
+            val becameHidden = prev - visibleIds
+            becameVisible.forEach { onAction(BecameVisible(it)) }
+            becameHidden.forEach { onAction(BecameNotVisible(it)) }
+            prev = visibleIds
+        }
     }
 }
 
