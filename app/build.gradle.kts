@@ -51,4 +51,7 @@ dependencies {
     implementation(libs.compose.viewModel)
     implementation(libs.material)
     implementation(platform(libs.compose.bom))
+
+    testImplementation(libs.junit4)
+    testImplementation(libs.coroutines.test)
 }
