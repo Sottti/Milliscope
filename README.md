@@ -10,3 +10,6 @@ testing the [visibility modifiers released in Compose UI 1.8](https://android-de
 |Light|Dark|
 |-|-|
 |<img width="1466" height="3101" alt="Screenshot_20250910_180121" src="https://github.com/user-attachments/assets/0002c6f6-b113-4124-b2e2-5f54075eeedd" />|<img width="1466" height="3101" alt="Screenshot_20250910_180127" src="https://github.com/user-attachments/assets/ba1f5b2f-2bff-4338-97f9-c8399dfc1b63" />|
+
+https://github.com/user-attachments/assets/e16d4971-cb56-4d8e-b3e4-a28334c39bf2
+
