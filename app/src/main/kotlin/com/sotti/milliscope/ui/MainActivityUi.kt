@@ -110,18 +110,18 @@ private fun NotifyVisibilityChanges(
     val idsByIndexState = rememberUpdatedState(newValue = state.items.map { it.id })
 
     LaunchedEffect(listState) {
-        var prev: Set<ItemId> = emptySet()
-        snapshotFlow {
-            listState.layoutInfo.visibleItemsInfo.map { it.index }.sorted()
-        }.distinctUntilChanged().collect { visibleIndices ->
-            val idsByIndex = idsByIndexState.value
-            val visibleIds = visibleIndices.map { idsByIndex[it] }.toSet()
-            val becameVisible = visibleIds - prev
-            val becameHidden = prev - visibleIds
-            becameVisible.forEach { onAction(BecameVisible(it)) }
-            becameHidden.forEach { onAction(BecameNotVisible(it)) }
-            prev = visibleIds
-        }
+        var previouslyVisibleIds: Set<ItemId> = emptySet()
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.map { it.index }.sorted() }
+            .distinctUntilChanged()
+            .collect { visibleIndices ->
+                val idsByIndex = idsByIndexState.value
+                val visibleIds = visibleIndices.map { idsByIndex[it] }.toSet()
+                val becameVisible = visibleIds - previouslyVisibleIds
+                val becameHidden = previouslyVisibleIds - visibleIds
+                becameVisible.forEach { onAction(BecameVisible(it)) }
+                becameHidden.forEach { onAction(BecameNotVisible(it)) }
+                previouslyVisibleIds = visibleIds
+            }
     }
 }
 
