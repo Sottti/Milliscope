@@ -1,3 +1,5 @@
 package com.sotti.milliscope.data
 
-internal fun interface ElapsedRealtimeClock { fun now(): Long }
+internal fun interface ElapsedRealtimeClock {
+    fun now(): Long
+}
