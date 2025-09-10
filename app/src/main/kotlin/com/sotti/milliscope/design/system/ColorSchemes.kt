@@ -1,0 +1,86 @@
+package com.sotti.milliscope.design.system
+
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+
+internal object ColorSchemes {
+    internal object Light {
+        internal val standardContrast = lightColorScheme(
+            primary = ColorTokens.Light.StandardContrast.primary,
+            onPrimary = ColorTokens.Light.StandardContrast.onPrimary,
+            primaryContainer = ColorTokens.Light.StandardContrast.primaryContainer,
+            onPrimaryContainer = ColorTokens.Light.StandardContrast.onPrimaryContainer,
+            secondary = ColorTokens.Light.StandardContrast.secondary,
+            onSecondary = ColorTokens.Light.StandardContrast.onSecondary,
+            secondaryContainer = ColorTokens.Light.StandardContrast.secondaryContainer,
+            onSecondaryContainer = ColorTokens.Light.StandardContrast.onSecondaryContainer,
+            tertiary = ColorTokens.Light.StandardContrast.tertiary,
+            onTertiary = ColorTokens.Light.StandardContrast.onTertiary,
+            tertiaryContainer = ColorTokens.Light.StandardContrast.tertiaryContainer,
+            onTertiaryContainer = ColorTokens.Light.StandardContrast.onTertiaryContainer,
+            error = ColorTokens.Light.StandardContrast.error,
+            onError = ColorTokens.Light.StandardContrast.onError,
+            errorContainer = ColorTokens.Light.StandardContrast.errorContainer,
+            onErrorContainer = ColorTokens.Light.StandardContrast.onErrorContainer,
+            background = ColorTokens.Light.StandardContrast.background,
+            onBackground = ColorTokens.Light.StandardContrast.onBackground,
+            surface = ColorTokens.Light.StandardContrast.surface,
+            onSurface = ColorTokens.Light.StandardContrast.onSurface,
+            surfaceVariant = ColorTokens.Light.StandardContrast.surfaceVariant,
+            onSurfaceVariant = ColorTokens.Light.StandardContrast.onSurfaceVariant,
+            outline = ColorTokens.Light.StandardContrast.outline,
+            outlineVariant = ColorTokens.Light.StandardContrast.outlineVariant,
+            scrim = ColorTokens.Light.StandardContrast.scrim,
+            inverseSurface = ColorTokens.Light.StandardContrast.inverseSurface,
+            inverseOnSurface = ColorTokens.Light.StandardContrast.inverseOnSurface,
+            inversePrimary = ColorTokens.Light.StandardContrast.inversePrimary,
+            surfaceDim = ColorTokens.Light.StandardContrast.surfaceDim,
+            surfaceBright = ColorTokens.Light.StandardContrast.surfaceBright,
+            surfaceContainerLowest = ColorTokens.Light.StandardContrast.surfaceContainerLowest,
+            surfaceContainerLow = ColorTokens.Light.StandardContrast.surfaceContainerLow,
+            surfaceContainer = ColorTokens.Light.StandardContrast.surfaceContainer,
+            surfaceContainerHigh = ColorTokens.Light.StandardContrast.surfaceContainerHigh,
+            surfaceContainerHighest = ColorTokens.Light.StandardContrast.surfaceContainerHighest,
+        )
+    }
+
+    internal object Dark {
+        internal val standardContrast = darkColorScheme(
+            primary = ColorTokens.Dark.StandardContrast.primary,
+            onPrimary = ColorTokens.Dark.StandardContrast.onPrimary,
+            primaryContainer = ColorTokens.Dark.StandardContrast.primaryContainer,
+            onPrimaryContainer = ColorTokens.Dark.StandardContrast.onPrimaryContainer,
+            secondary = ColorTokens.Dark.StandardContrast.secondary,
+            onSecondary = ColorTokens.Dark.StandardContrast.onSecondary,
+            secondaryContainer = ColorTokens.Dark.StandardContrast.secondaryContainer,
+            onSecondaryContainer = ColorTokens.Dark.StandardContrast.onSecondaryContainer,
+            tertiary = ColorTokens.Dark.StandardContrast.tertiary,
+            onTertiary = ColorTokens.Dark.StandardContrast.onTertiary,
+            tertiaryContainer = ColorTokens.Dark.StandardContrast.tertiaryContainer,
+            onTertiaryContainer = ColorTokens.Dark.StandardContrast.onTertiaryContainer,
+            error = ColorTokens.Dark.StandardContrast.error,
+            onError = ColorTokens.Dark.StandardContrast.onError,
+            errorContainer = ColorTokens.Dark.StandardContrast.errorContainer,
+            onErrorContainer = ColorTokens.Dark.StandardContrast.onErrorContainer,
+            background = ColorTokens.Dark.StandardContrast.background,
+            onBackground = ColorTokens.Dark.StandardContrast.onBackground,
+            surface = ColorTokens.Dark.StandardContrast.surface,
+            onSurface = ColorTokens.Dark.StandardContrast.onSurface,
+            surfaceVariant = ColorTokens.Dark.StandardContrast.surfaceVariant,
+            onSurfaceVariant = ColorTokens.Dark.StandardContrast.onSurfaceVariant,
+            outline = ColorTokens.Dark.StandardContrast.outline,
+            outlineVariant = ColorTokens.Dark.StandardContrast.outlineVariant,
+            scrim = ColorTokens.Dark.StandardContrast.scrim,
+            inverseSurface = ColorTokens.Dark.StandardContrast.inverseSurface,
+            inverseOnSurface = ColorTokens.Dark.StandardContrast.inverseOnSurface,
+            inversePrimary = ColorTokens.Dark.StandardContrast.inversePrimary,
+            surfaceDim = ColorTokens.Dark.StandardContrast.surfaceDim,
+            surfaceBright = ColorTokens.Dark.StandardContrast.surfaceBright,
+            surfaceContainerLowest = ColorTokens.Dark.StandardContrast.surfaceContainerLowest,
+            surfaceContainerLow = ColorTokens.Dark.StandardContrast.surfaceContainerLow,
+            surfaceContainer = ColorTokens.Dark.StandardContrast.surfaceContainer,
+            surfaceContainerHigh = ColorTokens.Dark.StandardContrast.surfaceContainerHigh,
+            surfaceContainerHighest = ColorTokens.Dark.StandardContrast.surfaceContainerHighest,
+        )
+    }
+}

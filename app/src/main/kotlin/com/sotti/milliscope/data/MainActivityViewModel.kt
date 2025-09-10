@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-internal class MainActivityViewModel() : ViewModel() {
+internal class MainActivityViewModel : ViewModel() {
     private val _state = MutableStateFlow(initialState)
     internal val state = _state.asStateFlow()
 
@@ -29,7 +29,7 @@ internal class MainActivityViewModel() : ViewModel() {
         }
     }
 
-    internal val onAction: (MainActivityAction) -> Unit = { action -> processAction(action) }
+    internal val onAction: (MainActivityAction) -> Unit = ::processAction
 
     private fun processAction(action: MainActivityAction) {
         when (action) {
@@ -40,16 +40,13 @@ internal class MainActivityViewModel() : ViewModel() {
 
     private fun MutableMap<ItemId, ElapsedRealTimeWhenBecameVisible>.asVisible(itemId: ItemId) {
         if (itemId !in this) {
-            this.put(
-                itemId,
-                ElapsedRealTimeWhenBecameVisible(SystemClock.elapsedRealtime()),
-            )
+            this[itemId] = ElapsedRealTimeWhenBecameVisible(SystemClock.elapsedRealtime())
         }
     }
 
     private fun MutableMap<ItemId, ElapsedRealTimeWhenBecameVisible>.asNotVisible(itemId: ItemId) {
-        this.remove(itemId)?.let { start ->
-            _state.updateNotVisibleItems(elapsedRealTimeWhenBecameVisible = start, itemId = itemId)
+        remove(itemId)?.let { start ->
+            _state.updateNotVisibleItem(elapsedRealTimeWhenBecameVisible = start, itemId = itemId)
         }
     }
 }
