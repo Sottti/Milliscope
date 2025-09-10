@@ -15,23 +15,19 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onVisibilityChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sotti.milliscope.data.MainActivityViewModel
-import com.sotti.milliscope.model.ItemId
 import com.sotti.milliscope.model.MainActivityAction
 import com.sotti.milliscope.model.MainActivityAction.BecameNotVisible
 import com.sotti.milliscope.model.MainActivityAction.BecameVisible
 import com.sotti.milliscope.model.MainActivityItemUi
 import com.sotti.milliscope.model.MainActivityState
-import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 internal fun MainActivityUi(
@@ -95,52 +91,26 @@ private fun List(
         items(
             count = state.items.size,
             key = { index -> state.items[index].id.value },
-        ) { index -> Item(item = state.items[index]) }
-    }
-
-    NotifyVisibilityChanges(state = state, listState = listState, onAction = onAction)
-}
-
-@Composable
-private fun NotifyVisibilityChanges(
-    listState: LazyListState,
-    onAction: (MainActivityAction) -> Unit,
-    state: MainActivityState,
-) {
-    val idsByIndexState = rememberUpdatedState(newValue = state.items.map { it.id })
-
-    LaunchedEffect(listState) {
-        var prev: Set<ItemId> = emptySet()
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo.map { it.index }.sorted() }
-            .distinctUntilChanged()
-            .collect { visibleIndices ->
-                val idsByIndex = idsByIndexState.value
-                val visibleIds = visibleIndices.map { idsByIndex[it] }.toSet()
-                val becameVisible = visibleIds - prev
-                val becameHidden = prev - visibleIds
-                becameVisible.forEach { onAction(BecameVisible(it)) }
-                becameHidden.forEach { onAction(BecameNotVisible(it)) }
-                prev = visibleIds
-            }
+        ) { index -> Item(item = state.items[index], onAction) }
     }
 }
 
 @Composable
 private fun Item(
     item: MainActivityItemUi,
-    //onAction: (MainActivityAction) -> Unit,
+    onAction: (MainActivityAction) -> Unit,
 ) {
     Card(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         ListItem(
-//        modifier = Modifier.onVisibilityChanged(
-//            minDurationMs = 0,
-//            minFractionVisible = 1f
-//        ) { isVisible ->
-//            when {
-//                isVisible -> onAction(BecameVisible(item.id))
-//                else -> onAction(BecameNotVisible(item.id))
-//            }
-//        },
+            modifier = Modifier.onVisibilityChanged(
+                minDurationMs = 0,
+                minFractionVisible = 1f
+            ) { isVisible ->
+                when {
+                    isVisible -> onAction(BecameVisible(item.id))
+                    else -> onAction(BecameNotVisible(item.id))
+                }
+            },
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
             headlineContent = { Text(text = item.label) },
             trailingContent = { Text(text = item.formattedVisibleTimeInSeconds) },
