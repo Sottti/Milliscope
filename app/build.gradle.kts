@@ -53,5 +53,4 @@ dependencies {
     implementation(platform(libs.compose.bom))
 
     testImplementation(libs.junit4)
-    testImplementation(libs.coroutines.test)
 }

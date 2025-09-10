@@ -14,7 +14,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-internal class MainActivityViewModel : ViewModel() {
+
+internal class MainActivityViewModel(
+    private val clock: ElapsedRealtimeClock = ElapsedRealtimeClock { SystemClock.elapsedRealtime() },
+) : ViewModel() {
     private val _state = MutableStateFlow(initialState)
     internal val state = _state.asStateFlow()
 
@@ -24,7 +27,7 @@ internal class MainActivityViewModel : ViewModel() {
         viewModelScope.launch {
             while (isActive) {
                 delay(100)
-                _state.updateVisibleItems(visibleItems)
+                _state.updateVisibleItems(visibleItems, clock.now())
             }
         }
     }
@@ -40,13 +43,17 @@ internal class MainActivityViewModel : ViewModel() {
 
     private fun MutableMap<ItemId, ElapsedRealTimeWhenBecameVisible>.asVisible(itemId: ItemId) {
         if (itemId !in this) {
-            this[itemId] = ElapsedRealTimeWhenBecameVisible(SystemClock.elapsedRealtime())
+            this[itemId] = ElapsedRealTimeWhenBecameVisible(clock.now())
         }
     }
 
     private fun MutableMap<ItemId, ElapsedRealTimeWhenBecameVisible>.asNotVisible(itemId: ItemId) {
         remove(itemId)?.let { start ->
-            _state.updateNotVisibleItem(elapsedRealTimeWhenBecameVisible = start, itemId = itemId)
+            _state.updateNotVisibleItem(
+                elapsedRealTimeWhenBecameVisible = start,
+                itemId = itemId,
+                now = clock.now()
+            )
         }
     }
 }

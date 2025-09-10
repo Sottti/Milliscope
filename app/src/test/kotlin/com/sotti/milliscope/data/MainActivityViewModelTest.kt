@@ -3,55 +3,38 @@ package com.sotti.milliscope.data
 import com.sotti.milliscope.model.ItemId
 import com.sotti.milliscope.model.MainActivityAction.BecameNotVisible
 import com.sotti.milliscope.model.MainActivityAction.BecameVisible
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class MainActivityViewModelTest {
 
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
     @Test
-    fun `accumulates visible time on hide`() {
-        val vm = MainActivityViewModel()
-        val firstId: ItemId = vm.state.value.items.first().id
+    fun `basic start - stop - start - stop scenario`() {
+        val clock = FakeClock(0L)
+        val viewModel = MainActivityViewModel(clock)
+        val firstItemId: ItemId = viewModel.state.value.items.first().id
+        val secondItemId: ItemId = viewModel.state.value.items[1].id
+        val thirdItemId: ItemId = viewModel.state.value.items[2].id
 
-        vm.onAction(BecameVisible(firstId))
-        Thread.sleep(60)
-        vm.onAction(BecameNotVisible(firstId))
+        viewModel.onAction(BecameVisible(firstItemId))
+        viewModel.onAction(BecameVisible(secondItemId))
+        clock.nowMs += 100
+        viewModel.onAction(BecameNotVisible(firstItemId))
+        clock.nowMs += 100
+        viewModel.onAction(BecameVisible(firstItemId))
+        clock.nowMs += 100
+        viewModel.onAction(BecameNotVisible(firstItemId))
+        viewModel.onAction(BecameNotVisible(secondItemId))
 
-        val item = vm.state.value.items.first { it.id == firstId }
-        assertTrue(item.visibleTimeInMilliSeconds >= 50L)
-    }
+        val firstItem = viewModel.state.value.items.first { it.id == firstItemId }
+        assertTrue(firstItem.visibleTimeInMilliSeconds == 200L)
 
-    @Test
-    fun `repeated BecameVisible does not reset session`() {
-        val vm = MainActivityViewModel()
-        val firstId: ItemId = vm.state.value.items.first().id
+        val secondItem = viewModel.state.value.items.first { it.id == secondItemId }
+        assertTrue(secondItem.visibleTimeInMilliSeconds == 300L)
 
-        vm.onAction(BecameVisible(firstId))
-        vm.onAction(BecameVisible(firstId))
-        Thread.sleep(40)
-        vm.onAction(BecameNotVisible(firstId))
-
-        val item = vm.state.value.items.first { it.id == firstId }
-        assertTrue(item.visibleTimeInMilliSeconds >= 30L)
+        val thirdItem = viewModel.state.value.items.first { it.id == thirdItemId }
+        assertTrue(thirdItem.visibleTimeInMilliSeconds == 0L)
     }
 }

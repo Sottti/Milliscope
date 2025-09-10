@@ -1,6 +1,5 @@
 package com.sotti.milliscope.data
 
-import android.os.SystemClock
 import com.sotti.milliscope.model.ElapsedRealTimeWhenBecameVisible
 import com.sotti.milliscope.model.ItemId
 import com.sotti.milliscope.model.MainActivityItemUi
@@ -11,11 +10,12 @@ import java.util.Locale
 
 internal fun MutableStateFlow<MainActivityState>.updateVisibleItems(
     visibleItems: Map<ItemId, ElapsedRealTimeWhenBecameVisible>,
+    now: Long,
 ) {
     update { state ->
         state.copy(
             items = state.items.map { item ->
-                item.updateItem(visibleItems = visibleItems)
+                item.updateItem(visibleItems = visibleItems, now = now)
             }
         )
     }
@@ -23,11 +23,12 @@ internal fun MutableStateFlow<MainActivityState>.updateVisibleItems(
 
 private fun MainActivityItemUi.updateItem(
     visibleItems: Map<ItemId, ElapsedRealTimeWhenBecameVisible>,
+    now: Long,
 ): MainActivityItemUi {
     val start = visibleItems[id]?.value
     val total = when {
         start != null ->
-            previouslyAccumulatedVisibleTimeInMilliSeconds + (SystemClock.elapsedRealtime() - start)
+            previouslyAccumulatedVisibleTimeInMilliSeconds + (now - start)
 
         else -> previouslyAccumulatedVisibleTimeInMilliSeconds
     }
@@ -44,12 +45,13 @@ private fun MainActivityItemUi.updateItem(
 internal fun MutableStateFlow<MainActivityState>.updateNotVisibleItem(
     elapsedRealTimeWhenBecameVisible: ElapsedRealTimeWhenBecameVisible,
     itemId: ItemId,
+    now: Long,
 ) {
     update { state ->
         state.copy(
             items = state.items.map { item ->
                 when (item.id) {
-                    itemId -> item.updateTimes(elapsedRealTimeWhenBecameVisible)
+                    itemId -> item.updateTimes(elapsedRealTimeWhenBecameVisible, now)
                     else -> item
                 }
             }
@@ -59,8 +61,8 @@ internal fun MutableStateFlow<MainActivityState>.updateNotVisibleItem(
 
 private fun MainActivityItemUi.updateTimes(
     elapsedRealTimeWhenBecameVisible: ElapsedRealTimeWhenBecameVisible,
+    now: Long,
 ): MainActivityItemUi {
-    val now = SystemClock.elapsedRealtime()
     val timeSinceBecameVisible = now - elapsedRealTimeWhenBecameVisible.value
     val clampedDelta = timeSinceBecameVisible.coerceAtLeast(0L)
     val total = previouslyAccumulatedVisibleTimeInMilliSeconds + clampedDelta
