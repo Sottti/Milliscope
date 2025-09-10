@@ -15,17 +15,14 @@ internal fun MutableStateFlow<MainActivityState>.updateVisibleItems(
         val now = SystemClock.elapsedRealtime()
         state.copy(
             items = state.items.map { item ->
-                val start = visibleItems[item.id]?.value
-                val total = when {
-                    start != null ->
-                        item.previouslyAccumulatedVisibleTimeInMilliSeconds + (now - start)
-
-                    else -> item.previouslyAccumulatedVisibleTimeInMilliSeconds
-                }
-                item.copy(
-                    visibleTimeInMilliSeconds = total,
-                    formattedVisibleTimeInSeconds = total.toVisibleTime(),
-                )
+                visibleItems[item.id]?.let { start ->
+                    val total =
+                        item.previouslyAccumulatedVisibleTimeInMilliSeconds + (now - start.value)
+                    item.copy(
+                        visibleTimeInMilliSeconds = total,
+                        formattedVisibleTimeInSeconds = total.toVisibleTime(),
+                    )
+                } ?: item
             }
         )
     }
@@ -40,19 +37,15 @@ internal fun MutableStateFlow<MainActivityState>.updateNotVisibleItems(
         val timeSinceBecameVisible = now - elapsedRealTimeWhenBecameVisible.value
         state.copy(
             items = state.items.map { item ->
-                when (item.id) {
-                    itemId -> {
-                        val total =
-                            item.previouslyAccumulatedVisibleTimeInMilliSeconds + timeSinceBecameVisible
-                        item.copy(
-                            previouslyAccumulatedVisibleTimeInMilliSeconds = total,
-                            visibleTimeInMilliSeconds = total,
-                            formattedVisibleTimeInSeconds = total.toVisibleTime(),
-                        )
-                    }
-
-                    else -> item
-                }
+                if (item.id == itemId) {
+                    val total =
+                        item.previouslyAccumulatedVisibleTimeInMilliSeconds + timeSinceBecameVisible
+                    item.copy(
+                        previouslyAccumulatedVisibleTimeInMilliSeconds = total,
+                        visibleTimeInMilliSeconds = total,
+                        formattedVisibleTimeInSeconds = total.toVisibleTime(),
+                    )
+                } else item
             }
         )
     }
