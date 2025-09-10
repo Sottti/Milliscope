@@ -111,9 +111,9 @@ private fun NotifyVisibilityChanges(
 
     LaunchedEffect(listState) {
         var prev: Set<ItemId> = emptySet()
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo.map { it.index }.sorted() }
-            .distinctUntilChanged()
-            .collect { visibleIndices ->
+        snapshotFlow {
+            listState.layoutInfo.visibleItemsInfo.map { it.index }.sorted()
+        }.distinctUntilChanged().collect { visibleIndices ->
                 val idsByIndex = idsByIndexState.value
                 val visibleIds = visibleIndices.map { idsByIndex[it] }.toSet()
                 val becameVisible = visibleIds - prev
@@ -128,19 +128,9 @@ private fun NotifyVisibilityChanges(
 @Composable
 private fun Item(
     item: MainActivityItemUi,
-    //onAction: (MainActivityAction) -> Unit,
 ) {
     Card(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         ListItem(
-//        modifier = Modifier.onVisibilityChanged(
-//            minDurationMs = 0,
-//            minFractionVisible = 1f
-//        ) { isVisible ->
-//            when {
-//                isVisible -> onAction(BecameVisible(item.id))
-//                else -> onAction(BecameNotVisible(item.id))
-//            }
-//        },
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
             headlineContent = { Text(text = item.label) },
             trailingContent = { Text(text = item.formattedVisibleTimeInSeconds) },
