@@ -105,7 +105,12 @@ private fun List(
         ) { index -> Item(item = state.items[index], onAction = onAction) }
     }
 
-    ObserveEvents(events = events, listState = listState, state = state, onAction = onAction)
+    ObserveEvents(
+        events = events,
+        listState = listState,
+        onAction = onAction,
+        state = state,
+    )
 }
 
 @Composable
