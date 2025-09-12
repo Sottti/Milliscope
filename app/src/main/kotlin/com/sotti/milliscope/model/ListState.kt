@@ -2,7 +2,7 @@ package com.sotti.milliscope.model
 
 import androidx.annotation.StringRes
 
-internal data class MainActivityState(
+internal data class ListState(
     @StringRes val titleResId: Int,
-    val items: List<MainActivityItemUi>,
+    val items: List<ListItemUi>,
 )
