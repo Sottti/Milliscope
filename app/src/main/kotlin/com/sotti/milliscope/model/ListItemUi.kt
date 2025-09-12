@@ -1,6 +1,6 @@
 package com.sotti.milliscope.model
 
-internal data class MainActivityItemUi(
+internal data class ListItemUi(
     val formattedVisibleTimeInSeconds: String,
     val id: ItemId,
     val label: String,

@@ -2,13 +2,13 @@ package com.sotti.milliscope.data
 
 import com.sotti.milliscope.model.ElapsedRealTimeWhenBecameVisible
 import com.sotti.milliscope.model.ItemId
-import com.sotti.milliscope.model.MainActivityItemUi
-import com.sotti.milliscope.model.MainActivityState
+import com.sotti.milliscope.model.ListItemUi
+import com.sotti.milliscope.model.ListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.Locale
 
-internal fun MutableStateFlow<MainActivityState>.updateVisibleItems(
+internal fun MutableStateFlow<ListState>.updateVisibleItems(
     visibleItems: Map<ItemId, ElapsedRealTimeWhenBecameVisible>,
     now: Long,
 ) {
@@ -21,10 +21,10 @@ internal fun MutableStateFlow<MainActivityState>.updateVisibleItems(
     }
 }
 
-private fun MainActivityItemUi.updateItem(
+private fun ListItemUi.updateItem(
     visibleItems: Map<ItemId, ElapsedRealTimeWhenBecameVisible>,
     now: Long,
-): MainActivityItemUi {
+): ListItemUi {
     val start = visibleItems[id]?.value
     val total = start?.let {
         val clampedDelta = (now - it).coerceAtLeast(0L)
@@ -41,7 +41,7 @@ private fun MainActivityItemUi.updateItem(
     }
 }
 
-internal fun MutableStateFlow<MainActivityState>.updateNotVisibleItem(
+internal fun MutableStateFlow<ListState>.updateNotVisibleItem(
     elapsedRealTimeWhenBecameVisible: ElapsedRealTimeWhenBecameVisible,
     itemId: ItemId,
     now: Long,
@@ -58,10 +58,10 @@ internal fun MutableStateFlow<MainActivityState>.updateNotVisibleItem(
     }
 }
 
-private fun MainActivityItemUi.updateTimes(
+private fun ListItemUi.updateTimes(
     elapsedRealTimeWhenBecameVisible: ElapsedRealTimeWhenBecameVisible,
     now: Long,
-): MainActivityItemUi {
+): ListItemUi {
     val timeSinceBecameVisible = now - elapsedRealTimeWhenBecameVisible.value
     val clampedDelta = timeSinceBecameVisible.coerceAtLeast(0L)
     val total = previouslyAccumulatedVisibleTimeInMilliSeconds + clampedDelta
@@ -78,4 +78,4 @@ private fun MainActivityItemUi.updateTimes(
 }
 
 private fun Long.toVisibleTime(): String =
-    String.format(Locale.getDefault(), "%.1f", this / 1000f)
+    String.format(locale = Locale.getDefault(), format = "%.1f", this / 1000f)

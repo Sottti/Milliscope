@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Milliscope">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.ListActivity"
             android:exported="true"
             android:theme="@style/Theme.Milliscope">
             <intent-filter>

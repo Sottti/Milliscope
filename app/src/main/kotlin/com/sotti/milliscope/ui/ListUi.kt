@@ -15,6 +15,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -22,42 +25,49 @@ import androidx.compose.ui.layout.onVisibilityChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sotti.milliscope.data.MainActivityViewModel
-import com.sotti.milliscope.model.MainActivityAction
-import com.sotti.milliscope.model.MainActivityAction.BecameNotVisible
-import com.sotti.milliscope.model.MainActivityAction.BecameVisible
-import com.sotti.milliscope.model.MainActivityItemUi
-import com.sotti.milliscope.model.MainActivityState
+import androidx.lifecycle.repeatOnLifecycle
+import com.sotti.milliscope.data.ListViewModel
+import com.sotti.milliscope.model.ListAction
+import com.sotti.milliscope.model.ListAction.ItemNotVisible
+import com.sotti.milliscope.model.ListAction.ItemVisible
+import com.sotti.milliscope.model.ListEvent
+import com.sotti.milliscope.model.ListEvent.UpdateVisibleItems
+import com.sotti.milliscope.model.ListItemUi
+import com.sotti.milliscope.model.ListState
+import kotlinx.coroutines.flow.Flow
 
 @Composable
-internal fun MainActivityUi(
-    viewModel: MainActivityViewModel,
+internal fun ListUi(
+    viewModel: ListViewModel,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    MainActivityUi(
-        state = state.value,
+    ListUi(
+        events = viewModel.events,
         onAction = viewModel.onAction,
+        state = state,
     )
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun MainActivityUi(
-    state: MainActivityState,
-    onAction: (MainActivityAction) -> Unit,
+private fun ListUi(
+    events: Flow<ListEvent>,
+    onAction: (ListAction) -> Unit,
+    state: State<ListState>,
 ) {
     val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
-        topBar = { TopBar(state, scrollBehavior) },
+        topBar = { TopBar(state.value, scrollBehavior) },
     ) { padding ->
         List(
+            events = events,
             listState = listState,
             onAction = onAction,
             padding = padding,
             scrollBehavior = scrollBehavior,
-            state = state,
+            state = state.value,
         )
     }
 }
@@ -65,7 +75,7 @@ private fun MainActivityUi(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun TopBar(
-    state: MainActivityState,
+    state: ListState,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     TopAppBar(
@@ -77,11 +87,12 @@ private fun TopBar(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun List(
+    events: Flow<ListEvent>,
     listState: LazyListState,
-    onAction: (MainActivityAction) -> Unit,
+    onAction: (ListAction) -> Unit,
     padding: PaddingValues,
     scrollBehavior: TopAppBarScrollBehavior,
-    state: MainActivityState,
+    state: ListState,
 ) {
     LazyColumn(
         state = listState,
@@ -91,14 +102,57 @@ private fun List(
         items(
             count = state.items.size,
             key = { index -> state.items[index].id.value },
-        ) { index -> Item(item = state.items[index], onAction) }
+        ) { index -> Item(item = state.items[index], onAction = onAction) }
     }
+
+    ObserveEvents(events = events, listState = listState, state = state, onAction = onAction)
+}
+
+@Composable
+private fun ObserveEvents(
+    events: Flow<ListEvent>,
+    listState: LazyListState,
+    onAction: (ListAction) -> Unit,
+    state: ListState,
+) {
+    val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+    val latestState = rememberUpdatedState(state)
+
+    LaunchedEffect(events, lifecycle) {
+        lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+            events.collect { event ->
+                when (event) {
+                    UpdateVisibleItems -> updateVisibleItems(
+                        listState = listState,
+                        state = latestState.value,
+                        onAction = onAction,
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun updateVisibleItems(
+    listState: LazyListState,
+    state: ListState,
+    onAction: (ListAction) -> Unit,
+) {
+    listState
+        .layoutInfo
+        .visibleItemsInfo
+        .map { it.index }
+        .sorted()
+        .forEach { index ->
+            val itemId = state.items.getOrNull(index)?.id ?: return@forEach
+            onAction(ItemVisible(itemId))
+        }
 }
 
 @Composable
 private fun Item(
-    item: MainActivityItemUi,
-    onAction: (MainActivityAction) -> Unit,
+    item: ListItemUi,
+    onAction: (ListAction) -> Unit,
 ) {
     Card(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         ListItem(
@@ -107,8 +161,8 @@ private fun Item(
                 minFractionVisible = 1f
             ) { isVisible ->
                 when {
-                    isVisible -> onAction(BecameVisible(item.id))
-                    else -> onAction(BecameNotVisible(item.id))
+                    isVisible -> onAction(ItemVisible(item.id))
+                    else -> onAction(ItemNotVisible(item.id))
                 }
             },
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
