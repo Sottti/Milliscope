@@ -14,6 +14,7 @@ compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = 
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-viewModel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "composeViewModel" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
