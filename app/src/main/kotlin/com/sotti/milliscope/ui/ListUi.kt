@@ -57,7 +57,6 @@ private fun ListUi(
     onAction: (ListAction) -> Unit,
     state: State<ListState>,
 ) {
-    val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -65,7 +64,6 @@ private fun ListUi(
     ) { padding ->
         List(
             events = events,
-            listState = listState,
             onAction = onAction,
             padding = padding,
             scrollBehavior = scrollBehavior,
@@ -90,12 +88,12 @@ private fun TopBar(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun List(
     events: Flow<ListEvent>,
-    listState: LazyListState,
     onAction: (ListAction) -> Unit,
     padding: PaddingValues,
     scrollBehavior: TopAppBarScrollBehavior,
     state: ListState,
 ) {
+    val listState = rememberLazyListState()
     LazyColumn(
         state = listState,
         contentPadding = padding,

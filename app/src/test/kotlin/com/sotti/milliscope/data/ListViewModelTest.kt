@@ -13,7 +13,7 @@ internal class ListViewModelTest {
     @Test
     fun `basic start - stop - start - stop scenario`() {
         val clock = FakeClock(0L)
-        val viewModel = ListViewModel(clock)
+        val viewModel = ListViewModel(clock = clock)
         val firstItemId: ItemId = viewModel.state.value.items.first().id
         val secondItemId: ItemId = viewModel.state.value.items[1].id
         val thirdItemId: ItemId = viewModel.state.value.items[2].id

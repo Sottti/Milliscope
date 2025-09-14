@@ -25,8 +25,8 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 internal class ListViewModel(
-    getListInitialState: GetListInitialState = GetListInitialState(),
     private val clock: ElapsedRealtimeClock = ElapsedRealtimeClock { SystemClock.elapsedRealtime() },
+    getListInitialState: GetListInitialState = GetListInitialState(),
 ) : ViewModel() {
     private val _state = MutableStateFlow(getListInitialState())
     internal val state: StateFlow<ListState> = _state.asStateFlow()
