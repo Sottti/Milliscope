@@ -9,21 +9,24 @@ import kotlinx.coroutines.flow.update
 import java.util.Locale
 
 internal fun MutableStateFlow<ListState>.updateVisibleItems(
-    visibleItems: Map<ItemId, ElapsedRealTimeWhenBecameVisible>,
     now: Long,
+    visibleItems: Map<ItemId, ElapsedRealTimeWhenBecameVisible>,
 ) {
+    if (visibleItems.isEmpty()) return
     update { state ->
-        state.copy(
-            items = state.items.map { item ->
-                item.updateItem(visibleItems = visibleItems, now = now)
-            }
-        )
+        var changed = false
+        val newItems = state.items.map { item ->
+            val updated = item.updateItem(now = now, visibleItems = visibleItems)
+            if (updated !== item) changed = true
+            updated
+        }
+        if (changed) state.copy(items = newItems) else state
     }
 }
 
 private fun ListItemUi.updateItem(
-    visibleItems: Map<ItemId, ElapsedRealTimeWhenBecameVisible>,
     now: Long,
+    visibleItems: Map<ItemId, ElapsedRealTimeWhenBecameVisible>,
 ): ListItemUi {
     val start = visibleItems[id]?.value
     val total = start?.let {
@@ -31,10 +34,9 @@ private fun ListItemUi.updateItem(
         previouslyAccumulatedVisibleTimeInMilliSeconds + clampedDelta
     } ?: previouslyAccumulatedVisibleTimeInMilliSeconds
 
-    return if (total == visibleTimeInMilliSeconds) {
-        this
-    } else {
-        copy(
+    return when (total) {
+        visibleTimeInMilliSeconds -> this
+        else -> copy(
             formattedVisibleTimeInSeconds = total.toVisibleTime(),
             visibleTimeInMilliSeconds = total,
         )
@@ -47,16 +49,21 @@ internal fun MutableStateFlow<ListState>.updateNotVisibleItem(
     now: Long,
 ) {
     update { state ->
-        state.copy(
-            items = state.items.map { item ->
-                when (item.id) {
-                    itemId -> item.updateTimes(elapsedRealTimeWhenBecameVisible, now)
-                    else -> item
-                }
-            }
-        )
+        val index: Int = state.items.indexOfFirst { it.id == itemId }
+        if (index == -1) return@update state
+
+        val old: ListItemUi = state.items[index]
+        val updated: ListItemUi = old.updateTimes(elapsedRealTimeWhenBecameVisible, now)
+
+        if (updated === old) return@update state
+
+        val newItems: MutableList<ListItemUi> = state.items.toMutableList()
+        newItems[index] = updated
+
+        state.copy(items = newItems)
     }
 }
+
 
 private fun ListItemUi.updateTimes(
     elapsedRealTimeWhenBecameVisible: ElapsedRealTimeWhenBecameVisible,

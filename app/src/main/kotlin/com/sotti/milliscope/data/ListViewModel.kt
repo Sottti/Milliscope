@@ -25,10 +25,11 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 internal class ListViewModel(
+    getListInitialState: GetListInitialState = GetListInitialState(),
     private val clock: ElapsedRealtimeClock = ElapsedRealtimeClock { SystemClock.elapsedRealtime() },
 ) : ViewModel() {
-    private val _state = MutableStateFlow(initialState)
-    internal val state : StateFlow<ListState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(getListInitialState())
+    internal val state: StateFlow<ListState> = _state.asStateFlow()
 
     private val _events = MutableSharedFlow<ListEvent>(extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
@@ -75,7 +76,7 @@ internal class ListViewModel(
         tickerJob = viewModelScope.launch {
             while (isActive) {
                 delay(duration = refreshRate)
-                _state.updateVisibleItems(visibleItems, clock.now())
+                _state.updateVisibleItems(clock.now(), visibleItems)
             }
         }
     }

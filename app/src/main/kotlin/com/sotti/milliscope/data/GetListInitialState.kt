@@ -5,9 +5,18 @@ import com.sotti.milliscope.model.ItemId
 import com.sotti.milliscope.model.ListItemUi
 import com.sotti.milliscope.model.ListState
 
-private val titleResId = R.string.app_name
-private val initialList =
-    List(138) { index ->
+internal class GetListInitialState {
+
+    operator fun invoke(): ListState {
+        val titleResId = R.string.app_name
+        val items = getItems()
+        return ListState(
+            titleResId = titleResId,
+            items = items,
+        )
+    }
+
+    private fun getItems(): List<ListItemUi> = List(DEFAULT_SIZE) { index ->
         ListItemUi(
             formattedVisibleTimeInSeconds = "0",
             id = ItemId(index + 1),
@@ -17,7 +26,7 @@ private val initialList =
         )
     }
 
-internal val initialState = ListState(
-    titleResId = titleResId,
-    items = initialList,
-)
+    private companion object Companion {
+        private const val DEFAULT_SIZE = 138
+    }
+}
