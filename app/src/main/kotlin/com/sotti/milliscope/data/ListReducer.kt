@@ -85,4 +85,4 @@ private fun ListItemUi.updateTimes(
 }
 
 private fun Long.toVisibleTime(): String =
-    String.format(locale = Locale.getDefault(), format = "%.1f", this / 1000f)
+    String.format(locale = Locale.getDefault(), format = "%.1f", this / 1000f) + " seconds"
