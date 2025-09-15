@@ -31,7 +31,11 @@ internal class ListViewModel(
     private val _state = MutableStateFlow(getListInitialState())
     internal val state: StateFlow<ListState> = _state.asStateFlow()
 
-    private val _events = MutableSharedFlow<ListEvent>(extraBufferCapacity = 1)
+    private val _events = MutableSharedFlow<ListEvent>(
+        replay = 1,
+        extraBufferCapacity = 0,
+        onBufferOverflow = kotlinx.coroutines.channels.BufferOverflow.DROP_OLDEST,
+    )
     val events = _events.asSharedFlow()
 
     internal val onAction: (ListAction) -> Unit = ::processAction
