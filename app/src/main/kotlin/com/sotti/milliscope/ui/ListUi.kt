@@ -18,16 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onVisibilityChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.sotti.milliscope.data.ListViewModel
-import com.sotti.milliscope.model.ItemId
 import com.sotti.milliscope.model.ListAction
 import com.sotti.milliscope.model.ListAction.ItemNotVisible
 import com.sotti.milliscope.model.ListAction.ItemVisible
@@ -36,7 +35,6 @@ import com.sotti.milliscope.model.ListEvent.UpdateVisibleItems
 import com.sotti.milliscope.model.ListItemUi
 import com.sotti.milliscope.model.ListState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 internal fun ListUi(
@@ -102,11 +100,15 @@ private fun List(
         items(
             count = state.items.size,
             key = { index -> state.items[index].id.value },
-        ) { index -> Item(item = state.items[index]) }
+        ) { index -> Item(item = state.items[index], onAction = onAction) }
     }
 
-    ObserveEvents(events = events, listState = listState, state = state, onAction = onAction)
-    NotifyVisibilityChanges(state = state, listState = listState, onAction = onAction)
+    ObserveEvents(
+        events = events,
+        listState = listState,
+        onAction = onAction,
+        state = state,
+    )
 }
 
 @Composable
@@ -151,38 +153,21 @@ private fun updateVisibleItems(
 }
 
 @Composable
-private fun NotifyVisibilityChanges(
-    listState: LazyListState,
-    onAction: (ListAction) -> Unit,
-    state: ListState,
-) {
-    val idsByIndexState = rememberUpdatedState(newValue = state.items.map { it.id })
-
-    val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
-    LaunchedEffect(listState, lifecycle) {
-        lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
-            var previouslyVisibleIds: Set<ItemId> = emptySet()
-            snapshotFlow { listState.layoutInfo.visibleItemsInfo.map { it.index }.sorted() }
-                .distinctUntilChanged()
-                .collect { visibleIndices ->
-                    val idsByIndex = idsByIndexState.value
-                    val visibleIds = visibleIndices.map { idsByIndex[it] }.toSet()
-                    val becameVisible = visibleIds - previouslyVisibleIds
-                    val becameHidden = previouslyVisibleIds - visibleIds
-                    becameVisible.forEach { onAction(ItemVisible(it)) }
-                    becameHidden.forEach { onAction(ItemNotVisible(it)) }
-                    previouslyVisibleIds = visibleIds
-                }
-        }
-    }
-}
-
-@Composable
 private fun Item(
     item: ListItemUi,
+    onAction: (ListAction) -> Unit,
 ) {
     Card(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         ListItem(
+            modifier = Modifier.onVisibilityChanged(
+                minDurationMs = 0,
+                minFractionVisible = 1f
+            ) { isVisible ->
+                when {
+                    isVisible -> onAction(ItemVisible(item.id))
+                    else -> onAction(ItemNotVisible(item.id))
+                }
+            },
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
             headlineContent = { Text(text = item.label) },
             trailingContent = { Text(text = item.formattedVisibleTimeInSeconds) },
