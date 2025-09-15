@@ -53,5 +53,6 @@ dependencies {
     implementation(libs.material)
     implementation(platform(libs.compose.bom))
 
+    testImplementation(libs.coroutines.test)
     testImplementation(libs.junit4)
 }
