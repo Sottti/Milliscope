@@ -18,7 +18,7 @@ internal class GetListInitialState {
 
     private fun getItems(): List<ListItemUi> = List(DEFAULT_SIZE) { index ->
         ListItemUi(
-            formattedVisibleTimeInSeconds = "0",
+            formattedVisibleTimeInSeconds = "0.0 seconds",
             id = ItemId(index + 1),
             label = "Item ${index + 1}",
             visibleTimeInMilliSeconds = 0L,
