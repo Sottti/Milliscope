@@ -19,7 +19,4 @@ The project explores two approaches for tracking item visibility:
 
 - **Snapshot branch** – uses `Snapshot` observers to listen for visibility changes.
 - **Visibility modifiers branch** – experiments with the new APIs described in
-  the [August 25, 2025 Jetpack Compose release](https://android-developers.googleblog.com/2025/08/whats-new-in-jetpack-compose-august-25-release.html).  
-  These methods skip visibility notifications in my experience here, leading to inconsistent
-  updates. I didn't manage to make them work consistently, but the code is still worth a look.
-  Submit a PR if you know how to make them work!
+  the [August 25, 2025 Jetpack Compose release](https://android-developers.googleblog.com/2025/08/whats-new-in-jetpack-compose-august-25-release.html).
