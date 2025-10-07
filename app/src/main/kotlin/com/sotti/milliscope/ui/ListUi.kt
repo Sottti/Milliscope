@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.sotti.milliscope.data.ListViewModel
@@ -116,7 +117,7 @@ private fun ObserveEvents(
     onAction: (ListAction) -> Unit,
     state: ListState,
 ) {
-    val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
     val latestState = rememberUpdatedState(state)
 
     LaunchedEffect(events, lifecycle) {
@@ -158,7 +159,7 @@ private fun NotifyVisibilityChanges(
 ) {
     val idsByIndexState = rememberUpdatedState(newValue = state.items.map { it.id })
 
-    val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
     LaunchedEffect(listState, lifecycle) {
         lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
             var previouslyVisibleIds: Set<ItemId> = emptySet()
