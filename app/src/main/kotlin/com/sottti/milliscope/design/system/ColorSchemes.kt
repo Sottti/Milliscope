@@ -1,4 +1,4 @@
-package com.sotti.milliscope.design.system
+package com.sottti.milliscope.design.system
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme

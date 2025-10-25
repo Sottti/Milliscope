@@ -1,4 +1,4 @@
-package com.sotti.milliscope.model
+package com.sottti.milliscope.model
 
 internal data class MainActivityItemUi(
     val formattedVisibleTimeInSeconds: String,

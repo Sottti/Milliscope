@@ -1,4 +1,4 @@
-package com.sotti.milliscope.design.system
+package com.sottti.milliscope.design.system
 
 import androidx.compose.ui.graphics.Color
 

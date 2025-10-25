@@ -1,4 +1,4 @@
-package com.sotti.milliscope.model
+package com.sottti.milliscope.model
 
 import androidx.annotation.StringRes
 

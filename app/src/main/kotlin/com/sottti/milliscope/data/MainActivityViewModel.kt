@@ -1,13 +1,13 @@
-package com.sotti.milliscope.data
+package com.sottti.milliscope.data
 
 import android.os.SystemClock
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sotti.milliscope.model.ElapsedRealTimeWhenBecameVisible
-import com.sotti.milliscope.model.ItemId
-import com.sotti.milliscope.model.MainActivityAction
-import com.sotti.milliscope.model.MainActivityAction.BecameNotVisible
-import com.sotti.milliscope.model.MainActivityAction.BecameVisible
+import com.sottti.milliscope.model.ElapsedRealTimeWhenBecameVisible
+import com.sottti.milliscope.model.ItemId
+import com.sottti.milliscope.model.MainActivityAction
+import com.sottti.milliscope.model.MainActivityAction.BecameNotVisible
+import com.sottti.milliscope.model.MainActivityAction.BecameVisible
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

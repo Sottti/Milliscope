@@ -1,4 +1,4 @@
-package com.sotti.milliscope.model
+package com.sottti.milliscope.model
 
 internal sealed interface MainActivityAction {
     data class BecameNotVisible(val itemId: ItemId) : MainActivityAction
