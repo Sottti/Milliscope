@@ -1,4 +1,4 @@
-package com.sotti.milliscope.ui
+package com.sottti.milliscope.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -24,13 +24,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sotti.milliscope.data.MainActivityViewModel
-import com.sotti.milliscope.model.ItemId
-import com.sotti.milliscope.model.MainActivityAction
-import com.sotti.milliscope.model.MainActivityAction.BecameNotVisible
-import com.sotti.milliscope.model.MainActivityAction.BecameVisible
-import com.sotti.milliscope.model.MainActivityItemUi
-import com.sotti.milliscope.model.MainActivityState
+import com.sottti.milliscope.data.MainActivityViewModel
+import com.sottti.milliscope.model.ItemId
+import com.sottti.milliscope.model.MainActivityAction
+import com.sottti.milliscope.model.MainActivityAction.BecameNotVisible
+import com.sottti.milliscope.model.MainActivityAction.BecameVisible
+import com.sottti.milliscope.model.MainActivityItemUi
+import com.sottti.milliscope.model.MainActivityState
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable

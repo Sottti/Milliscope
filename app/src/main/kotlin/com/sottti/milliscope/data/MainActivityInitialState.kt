@@ -1,9 +1,9 @@
-package com.sotti.milliscope.data
+package com.sottti.milliscope.data
 
-import com.sotti.milliscope.R
-import com.sotti.milliscope.model.ItemId
-import com.sotti.milliscope.model.MainActivityItemUi
-import com.sotti.milliscope.model.MainActivityState
+import com.sottti.milliscope.R
+import com.sottti.milliscope.model.ItemId
+import com.sottti.milliscope.model.MainActivityItemUi
+import com.sottti.milliscope.model.MainActivityState
 
 private val titleResId = R.string.app_name
 private val initialList =

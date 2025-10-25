@@ -1,4 +1,4 @@
-package com.sotti.milliscope.data
+package com.sottti.milliscope.data
 
 internal class FakeClock(var nowMs: Long = 0L) : ElapsedRealtimeClock {
     override fun now(): Long = nowMs

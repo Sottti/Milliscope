@@ -1,9 +1,9 @@
-package com.sotti.milliscope.data
+package com.sottti.milliscope.data
 
-import com.sotti.milliscope.model.ElapsedRealTimeWhenBecameVisible
-import com.sotti.milliscope.model.ItemId
-import com.sotti.milliscope.model.MainActivityItemUi
-import com.sotti.milliscope.model.MainActivityState
+import com.sottti.milliscope.model.ElapsedRealTimeWhenBecameVisible
+import com.sottti.milliscope.model.ItemId
+import com.sottti.milliscope.model.MainActivityItemUi
+import com.sottti.milliscope.model.MainActivityState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.Locale

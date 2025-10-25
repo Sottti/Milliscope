@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.sotti.milliscope"
+    namespace = "com.sottti.milliscope"
     compileSdk { version = release(36) }
 
     defaultConfig {
-        applicationId = "com.sotti.milliscope"
+        applicationId = "com.sottti.milliscope"
         minSdk = 28
         targetSdk = 36
         versionCode = 1

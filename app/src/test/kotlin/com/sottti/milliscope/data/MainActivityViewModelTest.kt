@@ -1,8 +1,8 @@
-package com.sotti.milliscope.data
+package com.sottti.milliscope.data
 
-import com.sotti.milliscope.model.ItemId
-import com.sotti.milliscope.model.MainActivityAction.BecameNotVisible
-import com.sotti.milliscope.model.MainActivityAction.BecameVisible
+import com.sottti.milliscope.model.ItemId
+import com.sottti.milliscope.model.MainActivityAction.BecameNotVisible
+import com.sottti.milliscope.model.MainActivityAction.BecameVisible
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertTrue
 import org.junit.Test

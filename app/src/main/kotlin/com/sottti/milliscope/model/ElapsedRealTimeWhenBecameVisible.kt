@@ -1,4 +1,4 @@
-package com.sotti.milliscope.model
+package com.sottti.milliscope.model
 
 @JvmInline
 internal value class ElapsedRealTimeWhenBecameVisible(val value: Long)

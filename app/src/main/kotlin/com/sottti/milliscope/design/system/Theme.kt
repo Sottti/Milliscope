@@ -1,4 +1,4 @@
-package com.sotti.milliscope.design.system
+package com.sottti.milliscope.design.system
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
