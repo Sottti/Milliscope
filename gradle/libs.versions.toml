@@ -1,7 +1,7 @@
 [versions]
 activityCompose = "1.11.0"
 agp = "8.13.0"
-composeBom = "2025.09.01"
+composeBom = "2025.10.01"
 composeViewModel = "2.9.4"
 coroutines = "1.10.2"
 junit4 = "4.13.2"
