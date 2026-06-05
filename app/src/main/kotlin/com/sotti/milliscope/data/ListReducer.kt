@@ -6,7 +6,6 @@ import com.sotti.milliscope.model.ListItemUi
 import com.sotti.milliscope.model.ListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.Locale
 
 internal fun MutableStateFlow<ListState>.updateVisibleItems(
     now: Long,
@@ -37,7 +36,6 @@ private fun ListItemUi.updateItem(
     return when (total) {
         visibleTimeInMilliSeconds -> this
         else -> copy(
-            formattedVisibleTimeInSeconds = total.toVisibleTime(),
             visibleTimeInMilliSeconds = total,
         )
     }
@@ -79,10 +77,6 @@ private fun ListItemUi.updateTimes(
         else -> copy(
             previouslyAccumulatedVisibleTimeInMilliSeconds = total,
             visibleTimeInMilliSeconds = total,
-            formattedVisibleTimeInSeconds = total.toVisibleTime(),
         )
     }
 }
-
-private fun Long.toVisibleTime(): String =
-    String.format(locale = Locale.getDefault(), format = "%.1f", this / 1000f) + " seconds"

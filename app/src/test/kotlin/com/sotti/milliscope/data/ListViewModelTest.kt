@@ -6,7 +6,10 @@ import com.sotti.milliscope.model.ListAction.ItemVisible
 import com.sotti.milliscope.model.ListAction.ListNotVisible
 import com.sotti.milliscope.model.ListAction.ListVisible
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -130,5 +133,54 @@ internal class ListViewModelTest {
 
         val item = viewModel.state.value.items.first { it.id == id }
         assertTrue(item.visibleTimeInMilliSeconds == 300L)
+    }
+
+    @Test
+    fun `ticker updates visible items while list is visible`() = runTest {
+        val clock = ElapsedRealtimeClock { testScheduler.currentTime }
+        val viewModel = ListViewModel(
+            clock = clock,
+            tickerScope = backgroundScope,
+        )
+        val id = viewModel.state.value.items.first().id
+
+        viewModel.onAction(ListVisible)
+        viewModel.onAction(ItemVisible(id))
+
+        advanceTimeBy(100)
+        runCurrent()
+
+        val item = viewModel.state.value.items.first { it.id == id }
+        assertEquals(100L, item.visibleTimeInMilliSeconds)
+
+        advanceTimeBy(100)
+        runCurrent()
+
+        val updatedItem = viewModel.state.value.items.first { it.id == id }
+        assertEquals(200L, updatedItem.visibleTimeInMilliSeconds)
+        viewModel.onAction(ListNotVisible)
+    }
+
+    @Test
+    fun `ticker stops updating after list is not visible`() = runTest {
+        val clock = ElapsedRealtimeClock { testScheduler.currentTime }
+        val viewModel = ListViewModel(
+            clock = clock,
+            tickerScope = backgroundScope,
+        )
+        val id = viewModel.state.value.items.first().id
+
+        viewModel.onAction(ListVisible)
+        viewModel.onAction(ItemVisible(id))
+
+        advanceTimeBy(100)
+        runCurrent()
+        viewModel.onAction(ListNotVisible)
+
+        advanceTimeBy(500)
+        runCurrent()
+
+        val item = viewModel.state.value.items.first { it.id == id }
+        assertEquals(100L, item.visibleTimeInMilliSeconds)
     }
 }

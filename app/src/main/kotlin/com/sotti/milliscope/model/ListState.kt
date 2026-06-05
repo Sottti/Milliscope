@@ -5,6 +5,6 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 internal data class ListState(
-    @StringRes val titleResId: Int,
+    @param:StringRes val titleResId: Int,
     val items: List<ListItemUi>,
 )

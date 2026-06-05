@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Milliscope</string>
+    <plurals name="visible_time_seconds">
+        <item quantity="one">%1$s second</item>
+        <item quantity="other">%1$s seconds</item>
+    </plurals>
 </resources>

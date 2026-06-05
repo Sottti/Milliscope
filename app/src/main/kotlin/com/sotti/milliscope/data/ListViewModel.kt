@@ -13,6 +13,7 @@ import com.sotti.milliscope.model.ListAction.ListVisible
 import com.sotti.milliscope.model.ListEvent
 import com.sotti.milliscope.model.ListEvent.UpdateVisibleItems
 import com.sotti.milliscope.model.ListState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,11 +23,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 internal class ListViewModel(
     private val clock: ElapsedRealtimeClock = ElapsedRealtimeClock { SystemClock.elapsedRealtime() },
     getListInitialState: GetListInitialState = GetListInitialState(),
+    private val tickerScope: CoroutineScope? = null,
+    private val refreshRate: Duration = DEFAULT_REFRESH_RATE,
 ) : ViewModel() {
     private val _state = MutableStateFlow(getListInitialState())
     internal val state: StateFlow<ListState> = _state.asStateFlow()
@@ -43,8 +47,6 @@ internal class ListViewModel(
     private var tickerJob: Job? = null
 
     private val visibleItems = mutableMapOf<ItemId, ElapsedRealTimeWhenBecameVisible>()
-
-    private val refreshRate = 100.milliseconds
 
     private fun processAction(action: ListAction) {
         when (action) {
@@ -77,7 +79,7 @@ internal class ListViewModel(
 
     private fun startTicker() {
         if (tickerJob?.isActive == true) return
-        tickerJob = viewModelScope.launch {
+        tickerJob = (tickerScope ?: viewModelScope).launch {
             while (isActive) {
                 delay(duration = refreshRate)
                 _state.updateVisibleItems(clock.now(), visibleItems)
@@ -93,5 +95,9 @@ internal class ListViewModel(
     override fun onCleared() {
         stopTicker()
         super.onCleared()
+    }
+
+    private companion object {
+        val DEFAULT_REFRESH_RATE = 100.milliseconds
     }
 }
