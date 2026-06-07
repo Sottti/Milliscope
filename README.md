@@ -17,13 +17,7 @@ I built it while exploring the
 and wrote about the experiment in
 [Visibility APIs in Jetpack Compose 1.9](https://medium.com/@sotti/visibility-apis-in-jetpack-compose-1-9-easier-cleaner-but-not-quite-there-yet-9bbfdb60bd6b).
 
-## Screenshots
-
-| Light | Dark |
-| --- | --- |
-| <img width="260" alt="Milliscope light theme list with visible timers" src="https://github.com/user-attachments/assets/8bd1ce02-ea24-4529-9f65-71f5582ca3e6" /> | <img width="260" alt="Milliscope dark theme list with visible timers" src="https://github.com/user-attachments/assets/9136abec-a924-4790-921c-038f5592dcc4" /> |
-
-## What It Demonstrates
+## ✨ What It Demonstrates
 
 - Detecting which `LazyColumn` rows enter and leave the viewport.
 - Accumulating visible time across multiple visibility sessions.
@@ -32,24 +26,19 @@ and wrote about the experiment in
 - Testing time-based behavior with an injected elapsed-realtime clock.
 - Comparing a `snapshotFlow` approach with `Modifier.onVisibilityChanged`.
 
-## How It Works
-
-```mermaid
-flowchart LR
-    A["LazyColumn visibility"] --> B["ListAction"]
-    B --> C["ListViewModel"]
-    C --> D["Visible item start times"]
-    D --> E["ListState"]
-    E --> F["Timer text"]
-```
-
 The current `main` branch observes `LazyListState.layoutInfo.visibleItemsInfo`
 with `snapshotFlow`, converts visible-index changes into item visibility
 actions, and lets the `ListViewModel` own the timing rules. Visible items are
 updated by a 100 ms ticker; hidden items keep their accumulated total until they
 become visible again.
 
-## Branches
+## 📷 Screenshots
+
+| Light | Dark |
+| --- | --- |
+| <img width="260" alt="Milliscope light theme list with visible timers" src="https://github.com/user-attachments/assets/8bd1ce02-ea24-4529-9f65-71f5582ca3e6" /> | <img width="260" alt="Milliscope dark theme list with visible timers" src="https://github.com/user-attachments/assets/9136abec-a924-4790-921c-038f5592dcc4" /> |
+
+## 🌿 Branches
 
 | Branch | Approach | Why It Exists |
 | --- | --- | --- |
@@ -57,24 +46,7 @@ become visible again.
 | [`snapshot`](https://github.com/Sottti/Milliscope/tree/snapshot) | Earlier snapshot/list-state experiment | Baseline implementation before the newer API comparison. |
 | [`onVisibilityChanged`](https://github.com/Sottti/Milliscope/tree/onVisibilityChanged) | `Modifier.onVisibilityChanged(minDurationMs = 0, minFractionVisible = 1f)` | Direct experiment with the Compose UI 1.9 visibility modifier. |
 
-## Run It
-
-```bash
-./gradlew :app:assembleDebug
-./gradlew :app:installDebug
-```
-
-## Test It
-
-```bash
-./gradlew :app:testDebugUnitTest
-```
-
-The unit tests cover the timing rules: visible segments accumulate, hidden items
-stop accruing, repeated list visibility events do not double-count, and multiple
-items accrue independently.
-
-## Stack
+## ⚙️ Tech Stack
 
 - Kotlin 2.3.20
 - Jetpack Compose BOM 2026.03.01
@@ -86,10 +58,29 @@ items accrue independently.
 - Java 17
 - min SDK 28, target SDK 36
 
-## Status
+## 🚀 Run It
+
+```bash
+./gradlew :app:assembleDebug
+./gradlew :app:installDebug
+```
+
+## 🧪 Verification
+
+```bash
+./gradlew :app:testDebugUnitTest
+```
+
+The unit tests cover the timing rules: visible segments accumulate, hidden items
+stop accruing, repeated list visibility events do not double-count, and multiple
+items accrue independently.
+
+## 📌 Status
 
 Milliscope is an experimental sample app, not a production library. It is meant
 to stay small enough to read, tweak, and use as a reference when thinking about
 visibility tracking in Compose.
+
+## 📜 License
 
 No license has been published yet.
