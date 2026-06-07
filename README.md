@@ -1,22 +1,95 @@
 # Milliscope
 
-Milliscope is a simple Android sample app built with Kotlin and Jetpack Compose.
-It tracks how long each item in a scrollable list remains visible on screen and
-updates the visible time in real time.
+![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-7F52FF?logo=kotlin&logoColor=white)
+![Jetpack Compose](https://img.shields.io/badge/Compose%20BOM-2026.03.01-4285F4?logo=jetpackcompose&logoColor=white)
+![Android](https://img.shields.io/badge/API-28%2B-3DDC84?logo=android&logoColor=white)
+![Status](https://img.shields.io/badge/status-experimental-FFB000)
 
-Created as a learning exercise to explore Jetpack Compose and Android development, specifically for
-testing
-the [visibility modifiers released in Compose UI 1.9](https://android-developers.googleblog.com/2025/08/whats-new-in-jetpack-compose-august-25-release.html).
+Milliscope is a tiny Jetpack Compose lab for measuring how long `LazyColumn`
+items stay visible on screen.
 
-| Light                                                                                                                                                     | Dark                                                                                                                                                      |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <img width="1466" height="3101" alt="Screenshot_20250915_115451" src="https://github.com/user-attachments/assets/8bd1ce02-ea24-4529-9f65-71f5582ca3e6" /> | <img width="1466" height="3101" alt="Screenshot_20250915_115457" src="https://github.com/user-attachments/assets/9136abec-a924-4790-921c-038f5592dcc4" /> |
+It renders a scrollable Material 3 list where every row keeps its own visibility
+timer. Scroll an item into view, leave it there, scroll it away, bring it back:
+the app keeps accumulating the time that row has actually spent visible.
 
+I built it while exploring the
+[Compose UI 1.9 visibility APIs](https://android-developers.googleblog.com/2025/08/whats-new-in-jetpack-compose-august-25-release.html)
+and wrote about the experiment in
+[Visibility APIs in Jetpack Compose 1.9](https://medium.com/@sotti/visibility-apis-in-jetpack-compose-1-9-easier-cleaner-but-not-quite-there-yet-9bbfdb60bd6b).
+
+## Screenshots
+
+| Light | Dark |
+| --- | --- |
+| <img width="260" alt="Milliscope light theme list with visible timers" src="https://github.com/user-attachments/assets/8bd1ce02-ea24-4529-9f65-71f5582ca3e6" /> | <img width="260" alt="Milliscope dark theme list with visible timers" src="https://github.com/user-attachments/assets/9136abec-a924-4790-921c-038f5592dcc4" /> |
+
+## What It Demonstrates
+
+- Detecting which `LazyColumn` rows enter and leave the viewport.
+- Accumulating visible time across multiple visibility sessions.
+- Updating active timers every 100 ms without losing off-screen totals.
+- Keeping UI state in a `ViewModel` backed by `StateFlow`.
+- Testing time-based behavior with an injected elapsed-realtime clock.
+- Comparing a `snapshotFlow` approach with `Modifier.onVisibilityChanged`.
+
+## How It Works
+
+```mermaid
+flowchart LR
+    A["LazyColumn visibility"] --> B["ListAction"]
+    B --> C["ListViewModel"]
+    C --> D["Visible item start times"]
+    D --> E["ListState"]
+    E --> F["Timer text"]
+```
+
+The current `main` branch observes `LazyListState.layoutInfo.visibleItemsInfo`
+with `snapshotFlow`, converts visible-index changes into item visibility
+actions, and lets the `ListViewModel` own the timing rules. Visible items are
+updated by a 100 ms ticker; hidden items keep their accumulated total until they
+become visible again.
 
 ## Branches
 
-The project explores two approaches for tracking item visibility:
+| Branch | Approach | Why It Exists |
+| --- | --- | --- |
+| [`main`](https://github.com/Sottti/Milliscope/tree/main) | Lifecycle-aware `snapshotFlow` over `LazyListState.layoutInfo` | Current cleaned-up implementation and default README branch. |
+| [`snapshot`](https://github.com/Sottti/Milliscope/tree/snapshot) | Earlier snapshot/list-state experiment | Baseline implementation before the newer API comparison. |
+| [`onVisibilityChanged`](https://github.com/Sottti/Milliscope/tree/onVisibilityChanged) | `Modifier.onVisibilityChanged(minDurationMs = 0, minFractionVisible = 1f)` | Direct experiment with the Compose UI 1.9 visibility modifier. |
 
-- **Snapshot branch** – uses `Snapshot` observers to listen for visibility changes.
-- **Visibility modifiers branch** – experiments with the new APIs described in
-  the [August 25, 2025 Jetpack Compose release](https://android-developers.googleblog.com/2025/08/whats-new-in-jetpack-compose-august-25-release.html).
+## Run It
+
+```bash
+./gradlew :app:assembleDebug
+./gradlew :app:installDebug
+```
+
+## Test It
+
+```bash
+./gradlew :app:testDebugUnitTest
+```
+
+The unit tests cover the timing rules: visible segments accumulate, hidden items
+stop accruing, repeated list visibility events do not double-count, and multiple
+items accrue independently.
+
+## Stack
+
+- Kotlin 2.3.20
+- Jetpack Compose BOM 2026.03.01
+- Material 3
+- Android Gradle Plugin 9.1.0
+- Coroutines 1.10.2
+- Lifecycle ViewModel Compose
+- JUnit 4
+- Java 17
+- min SDK 28, target SDK 36
+
+## Status
+
+Milliscope is an experimental sample app, not a production library. It is meant
+to stay small enough to read, tweak, and use as a reference when thinking about
+visibility tracking in Compose.
+
+No license has been published yet.
