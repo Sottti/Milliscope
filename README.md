@@ -1,9 +1,13 @@
 # Milliscope
 
+> **Article companion — inactive.** This repository contains the sample code for
+> [Visibility APIs in Jetpack Compose 1.9](https://medium.com/@sotti/visibility-apis-in-jetpack-compose-1-9-easier-cleaner-but-not-quite-there-yet-9bbfdb60bd6b) on Medium.
+> It is preserved for reference and is not under active development.
+
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-7F52FF?logo=kotlin&logoColor=white)
 ![Jetpack Compose](https://img.shields.io/badge/Compose%20BOM-2026.03.01-4285F4?logo=jetpackcompose&logoColor=white)
 ![Android](https://img.shields.io/badge/API-28%2B-3DDC84?logo=android&logoColor=white)
-![Status](https://img.shields.io/badge/status-experimental-FFB000)
+![Status](https://img.shields.io/badge/status-inactive%20article%20companion-FFB000)
 
 Milliscope is a tiny Jetpack Compose lab for measuring how long `LazyColumn`
 items stay visible on screen.
@@ -26,7 +30,7 @@ and wrote about the experiment in
 - Testing time-based behavior with an injected elapsed-realtime clock.
 - Comparing a `snapshotFlow` approach with `Modifier.onVisibilityChanged`.
 
-The current `main` branch observes `LazyListState.layoutInfo.visibleItemsInfo`
+The current `develop` branch observes `LazyListState.layoutInfo.visibleItemsInfo`
 with `snapshotFlow`, converts visible-index changes into item visibility
 actions, and lets the `ListViewModel` own the timing rules. Visible items are
 updated by a 100 ms ticker; hidden items keep their accumulated total until they
@@ -42,7 +46,7 @@ become visible again.
 
 | Branch | Approach | Why It Exists |
 | --- | --- | --- |
-| [`main`](https://github.com/Sottti/Milliscope/tree/main) | Lifecycle-aware `snapshotFlow` over `LazyListState.layoutInfo` | Current cleaned-up implementation and default README branch. |
+| [`develop`](https://github.com/Sottti/Milliscope/tree/develop) | Lifecycle-aware `snapshotFlow` over `LazyListState.layoutInfo` | Current cleaned-up implementation and default README branch. |
 | [`snapshot`](https://github.com/Sottti/Milliscope/tree/snapshot) | Earlier snapshot/list-state experiment | Baseline implementation before the newer API comparison. |
 | [`onVisibilityChanged`](https://github.com/Sottti/Milliscope/tree/onVisibilityChanged) | `Modifier.onVisibilityChanged(minDurationMs = 0, minFractionVisible = 1f)` | Direct experiment with the Compose UI 1.9 visibility modifier. |
 
