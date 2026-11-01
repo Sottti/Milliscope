@@ -1,5 +1,11 @@
 # Milliscope
 
+> **Article companion — inactive.** This repository contains the sample code for
+> [Visibility APIs in Jetpack Compose 1.9](https://medium.com/@sotti/visibility-apis-in-jetpack-compose-1-9-easier-cleaner-but-not-quite-there-yet-9bbfdb60bd6b) on Medium.
+> It is preserved for reference and is not under active development.
+
+![Status](https://img.shields.io/badge/status-inactive%20article%20companion-FFB000)
+
 Milliscope is a simple Android sample app built with Kotlin and Jetpack Compose.
 It tracks how long each item in a scrollable list remains visible on screen and
 updates the visible time in real time.
